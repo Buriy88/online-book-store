@@ -3,10 +3,12 @@ package com.bookstore.repository;
 import com.bookstore.model.Book;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
+@Transactional
 public class BookRepositoryImpl implements BookRepository {
     @PersistenceContext
     private EntityManager entityManager;
