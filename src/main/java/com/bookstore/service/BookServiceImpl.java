@@ -1,7 +1,7 @@
 package com.bookstore.service;
 
-import com.bookstore.DTO.BookDto;
-import com.bookstore.DTO.CreateBookRequestDto;
+import com.bookstore.dto.BookDto;
+import com.bookstore.dto.CreateBookRequestDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
@@ -21,16 +21,14 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto createBook(CreateBookRequestDto requestDto) {
         Book book = bookMapper.toModel(requestDto);
-        Book saved = bookRepository.save(book);
-        return bookMapper.toDto(saved);
+        bookRepository.save(book);
+        return bookMapper.toDto(book);
     }
 
     @Override
     public BookDto getBookById(Long id) {
-        Book book = bookRepository.findById(id);
-        if (book == null) {
-            throw new EntityNotFoundException("Book with id " + id + " not found");
-        }
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id " + id + " not found"));
         return bookMapper.toDto(book);
     }
 
@@ -39,6 +37,6 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll()
                 .stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
