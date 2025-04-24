@@ -23,4 +23,12 @@ public class BookRepositoryImpl implements BookRepository {
     public List<Book> findAll() {
         return entityManager.createQuery("FROM Book", Book.class).getResultList();
     }
+
+    @Override
+    public Book findById(Long id) {
+        return entityManager.createQuery(
+                        "FROM Book b WHERE b.id = :id", Book.class)
+                .setParameter("id", id)
+                .getSingleResult();
+    }
 }
