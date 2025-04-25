@@ -13,12 +13,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
     @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
     @GetMapping
     public List<BookDto> getAll() {
         return bookService.findAll();
     }
+
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
