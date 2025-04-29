@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -22,5 +23,10 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findAll() {
         return entityManager.createQuery("FROM Book", Book.class).getResultList();
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Book.class, id));
     }
 }

@@ -14,21 +14,5 @@ public class BookstoreApplication {
 		SpringApplication.run(BookstoreApplication.class, args);
 	}
 
-	@org.springframework.context.annotation.Bean
-	public CommandLineRunner demo(BookService bookService) {
-		return args -> {
-			Book book = new Book();
-			book.setTitle("Berserk");
-			book.setAuthor("Kentaro Miura");
-			book.setIsbn("978-617-7984-30-5");
-			book.setPrice(new BigDecimal("39.99"));
-			book.setDescription("The series follows the story of Guts");
-			book.setCoverImage("Berserk.jpg");
 
-			bookService.save(book);
-
-			System.out.println("Books in Base:");
-			bookService.findAll().forEach(System.out::println);
-		};
-	}
 }
