@@ -27,10 +27,6 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Optional<Book> findById(Long id) {
-        return entityManager.createQuery(
-                        "FROM Book b WHERE b.id = :id", Book.class)
-                .setParameter("id", id)
-                .getResultList()
-                .stream().findFirst();
+        return Optional.ofNullable(entityManager.find(Book.class, id));
     }
 }
