@@ -1,22 +1,15 @@
 package com.bookstore.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 import java.math.BigDecimal;
 
 @Entity
-@Getter
-@Setter
+@Data
 @SQLDelete(sql = "UPDATE books SET deleted = true WHERE id=?")
-@SQLRestriction("deleted=false")
+@Where(clause = "deleted=false")
 @Table(name = "books")
 public class Book {
     @Id
@@ -35,7 +28,8 @@ public class Book {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(length = 255)
+    @Lob
+    @Column
     private String description;
 
     private String coverImage;
