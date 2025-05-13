@@ -2,12 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: 1
       author: Buriy
-      preConditions:
-        onFail: MARK_RAN
-        nestedPreConditions:
-        not:
-          tableExists:
-            tableName: books
       changes:
         - createTable:
             tableName: books
@@ -45,7 +39,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: cover_image
-                  type: VARCHAR(500)
+                  type: VARCHAR(255)
               - column:
                   name: deleted
                   type: BOOLEAN
