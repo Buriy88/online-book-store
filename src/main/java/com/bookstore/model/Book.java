@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @SQLDelete(sql = "UPDATE books SET deleted = true WHERE id=?")
 @SQLRestriction("deleted=false")
 @Table(name = "books")
