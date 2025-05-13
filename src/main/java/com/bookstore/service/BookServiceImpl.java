@@ -9,12 +9,10 @@ import com.bookstore.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
-
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
 
@@ -28,7 +26,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto getBookById(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Book with id " + id
+                        + " not found"));
         return bookMapper.toDto(book);
     }
 
@@ -39,4 +38,23 @@ public class BookServiceImpl implements BookService {
                 .map(bookMapper::toDto)
                 .toList();
     }
+
+    @Override
+    public void deleteBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id " + id
+                        + " not found"));
+        bookRepository.delete(book);
+    }
+
+    @Override
+    public BookDto updateBook(Long id, CreateBookRequestDto dto) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book with id " + id
+                        + " not found"));
+        bookMapper.updateBookFromDto(dto, book);
+        bookRepository.save(book);
+        return bookMapper.toDto(book);
+    }
+
 }
