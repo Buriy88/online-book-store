@@ -9,10 +9,11 @@ import java.util.List;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {
+    public static final String KEY = "author";
 
     @Override
     public String getKey() {
-        return "author";
+        return KEY;
     }
 
     @Override
