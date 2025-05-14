@@ -46,7 +46,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<BookDto> searchBooks(@ModelAttribute BookSearchParametersDto params) {
+    public List<BookDto> searchBooks(BookSearchParametersDto params) {
         List<Book> books = bookService.searchBooks(params);
         return books.stream()
                 .map(bookService::mapToDto)

@@ -6,5 +6,4 @@ public record BookSearchParametersDto(List<String> titles,
                                       List<String> authors,
                                       List<String> isbns) {
 
-
 }

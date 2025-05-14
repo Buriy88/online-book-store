@@ -1,25 +1,23 @@
 package com.bookstore.repository;
 
 import com.bookstore.model.Book;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class BookSpecificationBuilder {
+@RequiredArgsConstructor
+public class BookSpecificationBuilder implements SpecificationBuilder<Book>{
 
-    @Autowired
-    private SpecificationProviderManager manager;
-
+    private final SpecificationProviderManager manager;
+@Override
     public Specification<Book> build(Map<String, List<String>> params) {
         Specification<Book> spec = Specification.where(null);
-
         for (var entry : params.entrySet()) {
             spec = spec.and(manager.getSpecification(entry.getKey(), entry.getValue()));
         }
-
         return spec;
     }
 }

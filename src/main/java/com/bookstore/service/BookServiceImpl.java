@@ -9,6 +9,7 @@ import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.BookSearchParametersDto;
 import com.bookstore.repository.BookSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +75,8 @@ public class BookServiceImpl implements BookService {
         if (params.isbns() != null && !params.isbns().isEmpty()) {
             paramMap.put("isbn", params.isbns());
         }
-        return bookRepository.findAll(specBuilder.build(paramMap));
+        Specification<Book> bookSpecification = specBuilder.build(paramMap);
+        return bookRepository.findAll(bookSpecification);
     }
 
     @Override
