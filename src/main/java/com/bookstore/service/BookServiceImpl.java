@@ -6,15 +6,20 @@ import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookRepository;
+import com.bookstore.repository.BookSearchParametersDto;
+import com.bookstore.repository.BookSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final BookSpecificationBuilder specBuilder;
 
     @Override
     public BookDto createBook(CreateBookRequestDto requestDto) {
@@ -57,4 +62,23 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
+    @Override
+    public List<Book> searchBooks(BookSearchParametersDto params) {
+        Map<String, List<String>> paramMap = new HashMap<>();
+        if (params.titles() != null && !params.titles().isEmpty()) {
+            paramMap.put("title", params.titles());
+        }
+        if (params.authors() != null && !params.authors().isEmpty()) {
+            paramMap.put("author", params.authors());
+        }
+        if (params.isbns() != null && !params.isbns().isEmpty()) {
+            paramMap.put("isbn", params.isbns());
+        }
+        return bookRepository.findAll(specBuilder.build(paramMap));
+    }
+
+    @Override
+    public BookDto mapToDto(Book book) {
+        return bookMapper.toDto(book);
+    }
 }
