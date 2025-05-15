@@ -10,8 +10,8 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class BookSpecificationBuilder implements SpecificationBuilder<Book>{
-
     private final SpecificationProviderManager manager;
+
 @Override
     public Specification<Book> build(Map<String, List<String>> params) {
         Specification<Book> spec = Specification.where(null);
