@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import java.util.List;
 
-@Component
+@Component("isbn")
 public class IsbnSpecificationProvider implements SpecificationProvider<Book> {
     public static final String KEY = "isbn";
 

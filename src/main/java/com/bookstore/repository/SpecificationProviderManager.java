@@ -6,7 +6,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class SpecificationProviderManager {
@@ -14,9 +13,8 @@ public class SpecificationProviderManager {
     private final Map<String, SpecificationProvider<Book>> providers;
 
     @Autowired
-    public SpecificationProviderManager(List<SpecificationProvider<Book>> providerList) {
-        this.providers = providerList.stream()
-                .collect(Collectors.toMap(SpecificationProvider::getKey, p -> p));
+    public SpecificationProviderManager(Map<String, SpecificationProvider<Book>> providerMap) {
+        this.providers = providerMap;
     }
 
     public Specification<Book> getSpecification(String key, List<String> values) {

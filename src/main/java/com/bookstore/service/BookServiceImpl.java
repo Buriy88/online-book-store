@@ -18,6 +18,9 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
+    public static final String AUTHOR = "author";
+    public static final String ISBN = "isbn";
+    public static final String TITLE = "title";
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder specBuilder;
@@ -67,13 +70,13 @@ public class BookServiceImpl implements BookService {
     public List<Book> searchBooks(BookSearchParametersDto params) {
         Map<String, List<String>> paramMap = new HashMap<>();
         if (params.titles() != null && !params.titles().isEmpty()) {
-            paramMap.put("title", params.titles());
+            paramMap.put(TITLE, params.titles());
         }
         if (params.authors() != null && !params.authors().isEmpty()) {
-            paramMap.put("author", params.authors());
+            paramMap.put(AUTHOR, params.authors());
         }
         if (params.isbns() != null && !params.isbns().isEmpty()) {
-            paramMap.put("isbn", params.isbns());
+            paramMap.put(ISBN, params.isbns());
         }
         Specification<Book> bookSpecification = specBuilder.build(paramMap);
         return bookRepository.findAll(bookSpecification);
