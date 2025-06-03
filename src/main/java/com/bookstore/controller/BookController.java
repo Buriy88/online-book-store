@@ -1,4 +1,4 @@
-package com.bookstore.contoller;
+package com.bookstore.controller;
 
 import com.bookstore.dto.BookDto;
 import com.bookstore.dto.CreateBookRequestDto;
