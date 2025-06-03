@@ -23,17 +23,11 @@ public class AuthenticationController {
     @PostMapping("/registration")
     public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
             throws RegistrationException {
-        System.out.println(">>>> Спроба реєстрації: " + request.getEmail());
-
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegistrationException("User with email already exists");
         }
-
         User user = userMapper.toModel(request);
         user.setPassword(request.getPassword());
-
-        System.out.println(">>>> Користувач: " + user);
-
         User saved = userRepository.save(user);
         return userMapper.toDto(saved);
     }
