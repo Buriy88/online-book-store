@@ -9,12 +9,14 @@ import com.bookstore.model.RoleName;
 import com.bookstore.model.User;
 import com.bookstore.repository.RoleRepository;
 import com.bookstore.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
@@ -26,17 +28,12 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegistrationException("User with this email exist");
         }
-
         User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        if (user.getRoles() == null) {
-            user.setRoles(new HashSet<>());
-        }
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new IllegalStateException("ROLE_USER not found in DB"));
-
-        user.getRoles().add(userRole);
-        User saved = userRepository.save(user);
-        return userMapper.toDto(saved);
+        user.setRoles(Set.of(userRole));
+        userRepository.save(user);
+        return userMapper.toDto(user);
     }
 }
