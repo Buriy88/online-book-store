@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/books")
@@ -28,32 +29,43 @@ public class BookController {
             summary = "Get paginated list of books",
             description = "Returns a paginated and sorted list of all books"
     )
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public Page<BookDto> getAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
+
     @Operation(summary = "Get book by ID", description = "Returns a single book by its ID")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
+
     @Operation(summary = "Create a new book", description = "Creates a new book based on the provided information")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto dto) {
         return bookService.createBook(dto);
     }
+
     @Operation(summary = "Update an existing book", description = "Updates book information by ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id, @RequestBody @Valid CreateBookRequestDto dto) {
         return bookService.updateBook(id, dto);
     }
+
     @Operation(summary = "Delete a book", description = "Deletes the book with given ID")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
     }
+
     @Operation(summary = "Search for books", description = "Search books by filter parameters")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
     public List<BookDto> searchBooks(BookSearchParametersDto params) {
         List<Book> books = bookService.searchBooks(params);
