@@ -11,3 +11,4 @@ databaseChangeLog:
       file: db/changelog/changesets/insert-admin-user.yaml
   - include:
       file: db/changelog/changesets/assign-admin-role-to-user.yaml
+
