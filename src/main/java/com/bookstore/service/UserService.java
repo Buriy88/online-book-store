@@ -26,7 +26,7 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request) throws RegistrationException {
-        if (userRepository.existsByEmail(request.getEmail())) {
+        if (userRepository.existsByEmailAndDeletedFalse(request.getEmail())) {
             throw new RegistrationException("User with this email exist");
         }
         User user = userMapper.toModel(request);
