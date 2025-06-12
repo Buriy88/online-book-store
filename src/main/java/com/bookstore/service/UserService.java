@@ -2,6 +2,7 @@ package com.bookstore.service;
 
 import com.bookstore.dto.UserRegistrationRequestDto;
 import com.bookstore.dto.UserResponseDto;
+import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.exception.RegistrationException;
 import com.bookstore.mapper.UserMapper;
 import com.bookstore.model.Role;
@@ -31,7 +32,7 @@ public class UserService {
         User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new IllegalStateException("ROLE_USER not found in DB"));
+                .orElseThrow(() -> new EntityNotFoundException("ROLE_USER not found in DB"));
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
         return userMapper.toDto(user);
