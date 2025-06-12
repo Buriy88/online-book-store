@@ -1,9 +1,16 @@
 package com.bookstore.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -32,6 +39,10 @@ public class User implements UserDetails {
     private String lastName;
 
     private String shippingAddress;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
 
     @ManyToMany()
     @JoinTable(name = "users_roles",
@@ -66,6 +77,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !deleted;
     }
+
+    public void softDelete() {
+        this.deleted = true;
+    }
+
 }
