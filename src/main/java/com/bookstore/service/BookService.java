@@ -4,9 +4,9 @@ import com.bookstore.dto.BookDto;
 import com.bookstore.dto.CreateBookRequestDto;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookSearchParametersDto;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import java.util.List;
 
 public interface BookService {
     BookDto createBook(CreateBookRequestDto requestDto);

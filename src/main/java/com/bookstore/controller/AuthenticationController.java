@@ -23,10 +23,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final UserService userService;
 
-    @Operation(summary = "Register a new user", description = "Registers a new user if the email is not already in use")
+    @Operation(summary = "Register a new user",
+            description = "Registers a new user if the email is not already in use")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User successfully registered"),
-            @ApiResponse(responseCode = "400", description = "Email is already in use", content = @Content)
+            @ApiResponse(responseCode = "400",
+                    description = "Email is already in use", content = @Content)
     })
     @PostMapping("/registration")
     public UserResponseDto register(

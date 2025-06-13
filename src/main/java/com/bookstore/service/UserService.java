@@ -11,10 +11,10 @@ import com.bookstore.model.User;
 import com.bookstore.repository.RoleRepository;
 import com.bookstore.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -25,8 +25,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
 
-    public UserResponseDto registerUser(UserRegistrationRequestDto request) throws RegistrationException {
-        if (userRepository.existsByEmailAndDeletedFalse(request.getEmail())) {
+    public UserResponseDto registerUser(UserRegistrationRequestDto request)
+            throws RegistrationException {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RegistrationException("User with this email exist");
         }
         User user = userMapper.toModel(request);
