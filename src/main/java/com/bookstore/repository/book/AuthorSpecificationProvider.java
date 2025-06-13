@@ -3,9 +3,9 @@ package com.bookstore.repository.book;
 import com.bookstore.model.Book;
 import com.bookstore.repository.SpecificationProvider;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import java.util.List;
 
 @Component("author")
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {

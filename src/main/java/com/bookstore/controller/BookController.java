@@ -5,15 +5,15 @@ import com.bookstore.dto.CreateBookRequestDto;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookSearchParametersDto;
 import com.bookstore.service.BookService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +50,8 @@ public class BookController {
         return bookService.getBookById(id);
     }
 
-    @Operation(summary = "Create a new book", description = "Creates a new book based on the provided information")
+    @Operation(summary = "Create a new book",
+            description = "Creates a new book based on the provided information")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public BookDto createBook(@RequestBody @Valid CreateBookRequestDto dto) {
