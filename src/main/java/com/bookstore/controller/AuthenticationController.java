@@ -1,8 +1,11 @@
 package com.bookstore.controller;
 
+import com.bookstore.dto.UserLoginRequestDto;
+import com.bookstore.dto.UserLoginResponseDto;
 import com.bookstore.dto.UserRegistrationRequestDto;
 import com.bookstore.dto.UserResponseDto;
 import com.bookstore.exception.RegistrationException;
+import com.bookstore.service.AuthenticationService;
 import com.bookstore.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication", description = "Controller for user registration")
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register a new user",
             description = "Registers a new user if the email is not already in use")
@@ -35,4 +39,10 @@ public class AuthenticationController {
             @RequestBody @Valid UserRegistrationRequestDto request) throws RegistrationException {
         return userService.registerUser(request);
     }
+
+    @PostMapping("/login")
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto request) {
+        return authenticationService.login(request);
+    }
+
 }
