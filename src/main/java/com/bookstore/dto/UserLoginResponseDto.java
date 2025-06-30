@@ -1,10 +1,4 @@
 package com.bookstore.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public record UserLoginResponseDto(String token) {}
 
-@Getter
-@AllArgsConstructor
-public class UserLoginResponseDto {
-    private final String token;
-}
