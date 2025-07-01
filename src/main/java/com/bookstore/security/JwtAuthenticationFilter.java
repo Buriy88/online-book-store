@@ -1,6 +1,5 @@
-package com.bookstore.config;
+package com.bookstore.security;
 
-import com.bookstore.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
