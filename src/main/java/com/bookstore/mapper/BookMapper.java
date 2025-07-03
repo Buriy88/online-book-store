@@ -1,6 +1,7 @@
 package com.bookstore.mapper;
 
 import com.bookstore.dto.BookDto;
+import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CreateBookRequestDto;
 import com.bookstore.model.Book;
 import org.mapstruct.BeanMapping;
@@ -16,4 +17,6 @@ public interface BookMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateBookFromDto(CreateBookRequestDto dto, @MappingTarget Book book);
+
+    BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
 }
