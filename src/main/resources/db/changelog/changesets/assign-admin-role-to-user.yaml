@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 7
+      id: 6
       author: Buriy
       changes:
         - insert:
