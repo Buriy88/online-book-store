@@ -57,7 +57,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new EntityNotFoundException("Category with id " + id
                 + " not found"));
         categoryRepository.delete(category);
-
     }
 
     @Override
