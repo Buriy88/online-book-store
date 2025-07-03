@@ -2,19 +2,18 @@ package com.bookstore.service;
 
 import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
+import com.bookstore.dto.CreateCategoryDto;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
-@Service
 public interface CategoryService {
 
     List<CategoryDto> findAll();
 
     CategoryDto getById(Long id);
 
-    CategoryDto save(CategoryDto dto);
+    CategoryDto save(CreateCategoryDto dto);
 
-    CategoryDto update(Long id, CategoryDto dto);
+    CategoryDto update(Long id, CreateCategoryDto dto);
 
     void deleteById(Long id);
 

@@ -3,8 +3,7 @@ package com.bookstore.dto;
 import lombok.Data;
 
 @Data
-public class CategoryDto {
-    private Long id;
+public class CreateCategoryDto {
 
     private String name;
 

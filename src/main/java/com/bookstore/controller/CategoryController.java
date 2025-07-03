@@ -2,6 +2,7 @@ package com.bookstore.controller;
 
 import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
+import com.bookstore.dto.CreateCategoryDto;
 import com.bookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +30,7 @@ public class CategoryController {
             description = "Creates a new category. Available for ADMIN only.")
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public CategoryDto createCategory(@RequestBody @Valid CategoryDto dto) {
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryDto dto) {
         return categoryService.save(dto);
     }
 
@@ -53,7 +54,8 @@ public class CategoryController {
             description = "Updates category information by ID. Available for ADMIN only.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public CategoryDto updateCategory(@PathVariable Long id, @RequestBody @Valid CategoryDto dto) {
+    public CategoryDto updateCategory(@PathVariable Long id,
+                                      @RequestBody @Valid CreateCategoryDto dto) {
         return categoryService.update(id, dto);
     }
 
