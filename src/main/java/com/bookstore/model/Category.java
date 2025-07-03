@@ -32,6 +32,7 @@ public class Category {
 
     private String description;
 
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
     @ManyToMany(mappedBy = "categories")

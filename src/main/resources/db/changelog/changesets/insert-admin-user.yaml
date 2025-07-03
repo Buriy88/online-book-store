@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 6
+      id: 5
       author: Buriy
       changes:
         - insert:
@@ -14,7 +14,7 @@ databaseChangeLog:
                   value: admin@bookstore.com
               - column:
                   name: password
-                  value: "$2a$10$MkcTr4wPW5F19KJJDXYGEOsxCix3ieGRs4kRMPfNhkX4xidWqkVo6"
+                  value: "hardpassword"
               - column:
                   name: first_name
                   value: Admin

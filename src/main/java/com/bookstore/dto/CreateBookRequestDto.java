@@ -1,10 +1,12 @@
 package com.bookstore.dto;
 
+import com.bookstore.model.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.util.Set;
 import lombok.Data;
 
 @Data
@@ -28,4 +30,6 @@ public class CreateBookRequestDto {
     private String description;
 
     private String coverImage;
+
+    private Set<Category> categories;
 }
