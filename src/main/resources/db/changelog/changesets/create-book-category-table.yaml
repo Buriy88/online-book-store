@@ -30,8 +30,3 @@ databaseChangeLog:
             referencedTableName: categories
             referencedColumnNames: id
             constraintName: fk_book_category_category
-
-        - addPrimaryKey:
-            tableName: book_category
-            columnNames: book_id, category_id
-            constraintName: pk_book_category
