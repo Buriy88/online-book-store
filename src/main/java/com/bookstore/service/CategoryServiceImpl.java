@@ -2,6 +2,7 @@ package com.bookstore.service;
 
 import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
+import com.bookstore.dto.CreateCategoryDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.mapper.CategoryMapper;
@@ -9,7 +10,6 @@ import com.bookstore.model.Category;
 import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.CategoryRepository;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +23,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDto> findAll() {
-        List<Category> all = categoryRepository.findAll();
-        return all.stream().map(categoryMapper::toDto).collect(Collectors.toList());
+        List<Category> allCategory = categoryRepository.findAll();
+        return allCategory.stream()
+                .map(categoryMapper::toDto)
+                .toList();
     }
 
     @Override
@@ -36,13 +38,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto save(CategoryDto dto) {
-        Category category = categoryMapper.toEntity(dto);
+    public CategoryDto save(CreateCategoryDto dto) {
+        Category category = categoryMapper.toCategory(dto);
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
     @Override
-    public CategoryDto update(Long id, CategoryDto dto) {
+    public CategoryDto update(Long id, CreateCategoryDto dto) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category with id " + id
                 + " not found"));
@@ -64,7 +66,6 @@ public class CategoryServiceImpl implements CategoryService {
         return bookRepository.findAllByCategories_Id(id).stream()
                 .map(bookMapper::toDtoWithoutCategories)
                 .toList();
-
     }
 
 }

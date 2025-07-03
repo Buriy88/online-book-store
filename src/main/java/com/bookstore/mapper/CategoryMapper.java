@@ -1,6 +1,7 @@
 package com.bookstore.mapper;
 
 import com.bookstore.dto.CategoryDto;
+import com.bookstore.dto.CreateCategoryDto;
 import com.bookstore.model.Category;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
@@ -12,17 +13,8 @@ public interface CategoryMapper {
 
     CategoryDto toDto(Category category);
 
-    default Category toEntity(CategoryDto dto) {
-        if (dto == null) {
-            return null;
-        }
-        Category category = new Category();
-        category.setName(dto.getName());
-        category.setDescription(dto.getDescription());
-        category.setDeleted(false);
-        return category;
-    }
+    Category toCategory(CreateCategoryDto category);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateCategoryFromDto(CategoryDto dto, @MappingTarget Category category);
+    void updateCategoryFromDto(CreateCategoryDto dto, @MappingTarget Category category);
 }
