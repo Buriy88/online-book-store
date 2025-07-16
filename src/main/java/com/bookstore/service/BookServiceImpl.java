@@ -72,6 +72,12 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new EntityNotFoundException("Book with id " + id
                         + " not found"));
         bookMapper.updateBookFromDto(dto, book);
+        if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
+            Set<Category> categories = dto.getCategoryIds().stream()
+                    .map(categoryService::getEntityById)
+                    .collect(Collectors.toSet());
+            book.setCategories(categories);
+        }
         bookRepository.save(book);
         return bookMapper.toDto(book);
     }
