@@ -1,6 +1,5 @@
 package com.bookstore.dto;
 
-import com.bookstore.model.Category;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -33,5 +32,5 @@ public class CreateBookRequestDto {
     private String coverImage;
 
     @NotEmpty
-    private Set<Category> categories;
+    private Set<Long> categoryIds;
 }
