@@ -3,6 +3,7 @@ package com.bookstore.service;
 import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.CreateCategoryDto;
+import com.bookstore.model.Category;
 import java.util.List;
 
 public interface CategoryService {
@@ -10,6 +11,8 @@ public interface CategoryService {
     List<CategoryDto> findAll();
 
     CategoryDto getById(Long id);
+
+    Category getEntityById(Long id);
 
     CategoryDto save(CreateCategoryDto dto);
 
