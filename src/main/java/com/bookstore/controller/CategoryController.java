@@ -57,6 +57,7 @@ public class CategoryController {
             description = "Updates category information by ID. Available for ADMIN only.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PathVariable Long id,
                                       @RequestBody @Valid CreateCategoryDto dto) {
         return categoryService.update(id, dto);
