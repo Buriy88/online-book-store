@@ -37,7 +37,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartResponseDto getCartForCurrentUser() {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
-                .orElseGet(() -> createCartForUser(user));
+                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
         return shoppingCartMapper.toDto(cart);
     }
 
@@ -46,7 +46,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartResponseDto addItemToCart(CartItemRequestDto requestDto) {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
-                .orElseGet(() -> createCartForUser(user));
+                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
 
         Book book = bookRepository.findById(requestDto.bookId())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -75,9 +75,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Transactional
     public CartItemResponseDto updateCartItemQuantity(Long cartItemId,
                                                       CartItemUpdateRequestDto requestDto) {
-        CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "Cart item not found with id: " + cartItemId));
+        User user = getCurrentUser();
+        ShoppingCart cart = shoppingCartRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
+
+        CartItem item = cartItemRepository.findByIdAndShoppingCartId(cartItemId, cart.getId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Cart item not found for this cart"));
+
         item.setQuantity(requestDto.getQuantity());
         cartItemRepository.save(item);
         return cartItemMapper.toDto(item);
@@ -92,7 +97,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    private ShoppingCart createCartForUser(User user) {
+    @Override
+    public void createCartForUser(User user) {
+        if (!shoppingCartRepository.existsByUser(user)) {
+            createNewCartForUser(user);
+        }
+    }
+
+    private ShoppingCart createNewCartForUser(User user) {
         ShoppingCart cart = new ShoppingCart();
         cart.setUser(user);
         return shoppingCartRepository.save(cart);

@@ -24,6 +24,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ShoppingCartService shoppingCartService;
 
     public UserResponseDto registerUser(UserRegistrationRequestDto request)
             throws RegistrationException {
@@ -36,6 +37,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException("ROLE_USER not found in DB"));
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
+        shoppingCartService.createCartForUser(user);
         return userMapper.toDto(user);
     }
 }

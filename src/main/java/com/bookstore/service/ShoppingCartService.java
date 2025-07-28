@@ -4,6 +4,7 @@ import com.bookstore.dto.CartItemRequestDto;
 import com.bookstore.dto.CartItemResponseDto;
 import com.bookstore.dto.CartItemUpdateRequestDto;
 import com.bookstore.dto.ShoppingCartResponseDto;
+import com.bookstore.model.User;
 
 public interface ShoppingCartService {
 
@@ -15,5 +16,7 @@ public interface ShoppingCartService {
                                                CartItemUpdateRequestDto requestDto);
 
     void removeCartItem(Long cartItemId);
+
+    void createCartForUser(User user);
 
 }
