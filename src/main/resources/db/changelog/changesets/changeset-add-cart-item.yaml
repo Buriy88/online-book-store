@@ -30,14 +30,14 @@ databaseChangeLog:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseTableName: cart_item
+            baseTableName: cart_items
             baseColumnNames: shopping_cart_id
             constraintName: fk_cart_item_cart
-            referencedTableName: shopping_cart
+            referencedTableName: shopping_carts
             referencedColumnNames: id
 
         - addForeignKeyConstraint:
-            baseTableName: cart_item
+            baseTableName: cart_items
             baseColumnNames: book_id
             constraintName: fk_cart_item_book
             referencedTableName: books
