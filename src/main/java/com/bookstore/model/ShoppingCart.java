@@ -14,7 +14,6 @@ import jakarta.persistence.OneToOne;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -22,7 +21,6 @@ import org.hibernate.annotations.Where;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @SQLDelete(sql = "UPDATE shopping_cart SET deleted = true WHERE id = ?")
 @Where(clause = "deleted = false")
 public class ShoppingCart {
