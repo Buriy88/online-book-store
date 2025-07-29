@@ -1,4 +1,4 @@
-package com.bookstore.dto;
+package com.bookstore.dto.cart;
 
 public record CartItemResponseDto(
         Long id,

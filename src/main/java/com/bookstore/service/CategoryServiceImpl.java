@@ -1,8 +1,8 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.CreateCategoryDto;
+import com.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.mapper.CategoryMapper;

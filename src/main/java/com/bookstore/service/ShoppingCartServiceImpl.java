@@ -1,9 +1,11 @@
 package com.bookstore.service;
 
 import com.bookstore.dto.CartItemRequestDto;
+import com.bookstore.dto.CartItemResponseDto;
 import com.bookstore.dto.CartItemUpdateRequestDto;
 import com.bookstore.dto.ShoppingCartResponseDto;
 import com.bookstore.exception.EntityNotFoundException;
+import com.bookstore.mapper.CartItemMapper;
 import com.bookstore.mapper.ShoppingCartMapper;
 import com.bookstore.model.Book;
 import com.bookstore.model.CartItem;
@@ -28,6 +30,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final ShoppingCartMapper shoppingCartMapper;
+    private final CartItemMapper cartItemMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -70,7 +73,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional
-    public ShoppingCartResponseDto updateCartItemQuantity(Long cartItemId,
+    public CartItemResponseDto updateCartItemQuantity(Long cartItemId,
                                                       CartItemUpdateRequestDto requestDto) {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
@@ -82,7 +85,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         item.setQuantity(requestDto.getQuantity());
         cartItemRepository.save(item);
-        return shoppingCartMapper.toDto(cart);
+        return cartItemMapper.toDto(item);
     }
 
     @Override
