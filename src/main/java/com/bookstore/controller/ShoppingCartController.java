@@ -1,7 +1,6 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.CartItemRequestDto;
-import com.bookstore.dto.CartItemResponseDto;
 import com.bookstore.dto.CartItemUpdateRequestDto;
 import com.bookstore.dto.ShoppingCartResponseDto;
 import com.bookstore.service.ShoppingCartService;
@@ -52,7 +51,7 @@ public class ShoppingCartController {
                     + " specific item in the shopping cart.")
     @PutMapping("/items/{cartItemId}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public CartItemResponseDto updateCartItem(
+    public ShoppingCartResponseDto updateCartItem(
             @PathVariable Long cartItemId,
             @RequestBody @Valid CartItemUpdateRequestDto requestDto
     ) {
