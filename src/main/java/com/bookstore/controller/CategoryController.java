@@ -1,8 +1,8 @@
 package com.bookstore.controller;
 
-import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.CreateCategoryDto;
+import com.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.bookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

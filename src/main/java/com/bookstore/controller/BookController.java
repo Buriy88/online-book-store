@@ -1,7 +1,7 @@
 package com.bookstore.controller;
 
-import com.bookstore.dto.BookDto;
-import com.bookstore.dto.CreateBookRequestDto;
+import com.bookstore.dto.book.BookDto;
+import com.bookstore.dto.book.CreateBookRequestDto;
 import com.bookstore.model.Book;
 import com.bookstore.repository.BookSearchParametersDto;
 import com.bookstore.service.BookService;

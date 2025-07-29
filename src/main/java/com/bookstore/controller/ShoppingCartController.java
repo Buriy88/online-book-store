@@ -1,8 +1,8 @@
 package com.bookstore.controller;
 
-import com.bookstore.dto.CartItemRequestDto;
-import com.bookstore.dto.CartItemUpdateRequestDto;
 import com.bookstore.dto.ShoppingCartResponseDto;
+import com.bookstore.dto.cart.CartItemRequestDto;
+import com.bookstore.dto.cart.CartItemUpdateRequestDto;
 import com.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
