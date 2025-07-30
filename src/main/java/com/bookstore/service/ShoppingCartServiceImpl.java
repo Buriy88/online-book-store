@@ -1,9 +1,8 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.CartItemRequestDto;
-import com.bookstore.dto.CartItemResponseDto;
-import com.bookstore.dto.CartItemUpdateRequestDto;
 import com.bookstore.dto.ShoppingCartResponseDto;
+import com.bookstore.dto.cart.CartItemRequestDto;
+import com.bookstore.dto.cart.CartItemUpdateRequestDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.CartItemMapper;
 import com.bookstore.mapper.ShoppingCartMapper;
@@ -73,8 +72,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     @Transactional
-    public CartItemResponseDto updateCartItemQuantity(Long cartItemId,
-                                                      CartItemUpdateRequestDto requestDto) {
+    public ShoppingCartResponseDto updateCartItemQuantity(Long cartItemId,
+                                                          CartItemUpdateRequestDto requestDto) {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
                 .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
@@ -85,7 +84,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         item.setQuantity(requestDto.getQuantity());
         cartItemRepository.save(item);
-        return cartItemMapper.toDto(item);
+        return shoppingCartMapper.toDto(cart);
     }
 
     @Override
