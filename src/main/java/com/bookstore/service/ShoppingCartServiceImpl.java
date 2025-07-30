@@ -36,7 +36,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartResponseDto getCartForCurrentUser() {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Shopping cart not found for user with id " + user.getId()));
         return shoppingCartMapper.toDto(cart);
     }
 
@@ -45,7 +46,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartResponseDto addItemToCart(CartItemRequestDto requestDto) {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Shopping cart not found for user with id " + user.getId()));
 
         Book book = bookRepository.findById(requestDto.bookId())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -76,11 +78,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                                                           CartItemUpdateRequestDto requestDto) {
         User user = getCurrentUser();
         ShoppingCart cart = shoppingCartRepository.findByUser(user)
-                .orElseThrow(() -> new EntityNotFoundException("Shopping cart not found"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Shopping cart not found for user with id " + user.getId()));
 
         CartItem item = cartItemRepository.findByIdAndShoppingCartId(cartItemId, cart.getId())
                 .orElseThrow(() ->
-                        new EntityNotFoundException("Cart item not found for this cart"));
+                        new EntityNotFoundException(
+                                "Cart item not found for cart with id " + cartItemId));
 
         item.setQuantity(requestDto.getQuantity());
         cartItemRepository.save(item);
@@ -98,15 +102,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void createCartForUser(User user) {
-        if (!shoppingCartRepository.existsByUser(user)) {
-            createNewCartForUser(user);
-        }
-    }
-
-    private ShoppingCart createNewCartForUser(User user) {
         ShoppingCart cart = new ShoppingCart();
         cart.setUser(user);
-        return shoppingCartRepository.save(cart);
+        shoppingCartRepository.save(cart);
     }
 
     private User getCurrentUser() {

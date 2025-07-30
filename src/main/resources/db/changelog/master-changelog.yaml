@@ -19,8 +19,3 @@ databaseChangeLog:
       file: db/changelog/changesets/changeset-add-shopping-cart.yaml
   - include:
       file: db/changelog/changesets/changeset-add-cart-item.yaml
-  - include:
-      file: db/changelog/changesets/add-order-table.yaml
-  - include:
-      file: db/changelog/changesets/add-order-item-table.yaml
-
