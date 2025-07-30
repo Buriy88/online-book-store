@@ -1,7 +1,7 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.BookDto;
-import com.bookstore.dto.CreateBookRequestDto;
+import com.bookstore.dto.book.BookDto;
+import com.bookstore.dto.book.CreateBookRequestDto;
 import com.bookstore.exception.EntityNotFoundException;
 import com.bookstore.mapper.BookMapper;
 import com.bookstore.model.Book;
@@ -70,7 +70,7 @@ public class BookServiceImpl implements BookService {
                         + " not found"));
         bookMapper.updateBookFromDto(dto, book);
         if (dto.getCategoryIds() != null && !dto.getCategoryIds().isEmpty()) {
-            Set<Category> categories = getCategoriesFromIds(requestDto.getCategoryIds());
+            Set<Category> categories = getCategoriesFromIds(dto.getCategoryIds());
             book.setCategories(categories);
         }
         bookRepository.save(book);
@@ -99,9 +99,8 @@ public class BookServiceImpl implements BookService {
     }
 
     private Set<Category> getCategoriesFromIds(Set<Long> categoryIds) {
-    return categoryIds.stream()
-            .map(categoryService::getEntityById)
-            .collect(Collectors.toSet());
-}
-
+        return categoryIds.stream()
+                .map(categoryService::getEntityById)
+                .collect(Collectors.toSet());
+    }
 }
