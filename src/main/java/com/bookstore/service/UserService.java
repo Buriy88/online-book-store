@@ -36,7 +36,8 @@ public class UserService {
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new EntityNotFoundException("ROLE_USER not found in DB"));
         user.setRoles(Set.of(userRole));
-        userRepository.save(user);
+        user = userRepository.save(user);
+        System.out.println("User ID: " + user.getId());
         shoppingCartService.createCartForUser(user);
         return userMapper.toDto(user);
     }
