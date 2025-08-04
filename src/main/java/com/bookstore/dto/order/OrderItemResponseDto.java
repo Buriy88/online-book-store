@@ -6,5 +6,6 @@ import lombok.Data;
 public class OrderItemResponseDto {
     private Long id;
     private Long bookId;
+    private String bookTitle;
     private int quantity;
 }
