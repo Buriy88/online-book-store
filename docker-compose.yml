@@ -12,7 +12,7 @@ services:
       MYSQL_USER: ${MYSQLDB_USER}
       MYSQL_PASSWORD: ${MYSQLDB_PASSWORD}
     ports:
-      - "3307:3306"
+      - "${MYSQLDB_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -21,7 +21,7 @@ services:
     depends_on:
       - mysql
     ports:
-      - "8080:8080"
+      - "${APP_PORT}:${APP_PORT}"
     env_file:
       - .env
 
