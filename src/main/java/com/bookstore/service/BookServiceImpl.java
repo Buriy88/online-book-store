@@ -96,7 +96,7 @@ public class BookServiceImpl implements BookService {
         return bookMapper.toDto(book);
     }
 
-    private Set<Category> getCategoriesFromIds(Set<Long> categoryIds) {
+    protected Set<Category> getCategoriesFromIds(Set<Long> categoryIds) {
         return categoryIds.stream()
                 .map(categoryService::getEntityById)
                 .collect(Collectors.toSet());

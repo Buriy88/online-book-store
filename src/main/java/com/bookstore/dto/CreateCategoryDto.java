@@ -3,8 +3,12 @@ package com.bookstore.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@EqualsAndHashCode
+@Accessors(chain = true)
 public class CreateCategoryDto {
 
     @NotBlank(message = "Category name must not be blank")

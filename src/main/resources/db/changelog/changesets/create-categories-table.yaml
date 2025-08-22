@@ -22,7 +22,7 @@ databaseChangeLog:
                   name: description
                   type: TEXT
               - column:
-                  name: deleted
+                  name: is_deleted
                   type: BOOLEAN
                   defaultValueBoolean: false
                   constraints:
