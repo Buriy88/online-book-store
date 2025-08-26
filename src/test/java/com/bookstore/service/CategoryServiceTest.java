@@ -1,5 +1,9 @@
 package com.bookstore.service;
 
+import static com.bookstore.util.TestConstants.BOOK_VALID_ID;
+import static com.bookstore.util.TestConstants.CATEGORY_DESCRIPTION;
+import static com.bookstore.util.TestConstants.CATEGORY_ID;
+import static com.bookstore.util.TestConstants.CATEGORY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,12 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
-
-    private static final Long CATEGORY_ID = 1L;
-    private static final String CATEGORY_NAME = "Test Category";
-    private static final String CATEGORY_DESCRIPTION = "Test Description";
-    private static final Long BOOK_ID = 10L;
-
     @Mock
     private CategoryRepository categoryRepository;
     @Mock
@@ -176,10 +174,10 @@ class CategoryServiceTest {
     @DisplayName("getBooksByCategoryId should return list of books")
     void getBooksByCategoryId_ReturnsList() {
         Book book = new Book();
-        book.setId(BOOK_ID);
+        book.setId(BOOK_VALID_ID);
 
         BookDtoWithoutCategoryIds dtoWithoutCategories = new BookDtoWithoutCategoryIds();
-        dtoWithoutCategories.setId(BOOK_ID);
+        dtoWithoutCategories.setId(BOOK_VALID_ID);
 
         when(bookRepository
                 .findAllByCategories_Id(CATEGORY_ID))
@@ -192,5 +190,4 @@ class CategoryServiceTest {
 
         assertThat(result).hasSize(1).contains(dtoWithoutCategories);
     }
-
 }

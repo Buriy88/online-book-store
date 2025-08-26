@@ -1,5 +1,13 @@
 package com.bookstore.service;
 
+import static com.bookstore.util.TestConstants.BOOK_AUTHOR;
+import static com.bookstore.util.TestConstants.BOOK_COVER_IMAGE;
+import static com.bookstore.util.TestConstants.BOOK_DESCRIPTION;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_ID;
+import static com.bookstore.util.TestConstants.BOOK_ISBN;
+import static com.bookstore.util.TestConstants.BOOK_PRICE;
+import static com.bookstore.util.TestConstants.BOOK_TITLE;
+import static com.bookstore.util.TestConstants.BOOK_VALID_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -20,12 +28,11 @@ import com.bookstore.repository.BookRepository;
 import com.bookstore.repository.BookSearchParametersDto;
 import com.bookstore.repository.BookSpecificationBuilder;
 import com.bookstore.repository.CategoryRepository;
-import java.math.BigDecimal;
+import com.bookstore.util.TestConstants;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,14 +49,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
-    private static final String TITLE = "Test Title";
-    private static final String AUTHOR = "Test Author";
-    private static final String ISBN = "1234567890";
-    private static final String COVER_IMAGE = "cover.jpg";
-    private static final BigDecimal PRICE = BigDecimal.valueOf(9.99);
-    private static final String DESCRIPTION = "Test Description";
-    private static final Long BOOK_VALID_ID = 1L;
-    private static final Long BOOK_NOT_VALID_ID = 100L;
+
     @Mock
     private BookRepository bookRepository;
     @InjectMocks
@@ -72,12 +72,12 @@ public class BookServiceTest {
     @BeforeEach
     void setUp() {
         requestDto = new CreateBookRequestDto();
-        requestDto.setTitle(TITLE);
-        requestDto.setAuthor(AUTHOR);
-        requestDto.setIsbn(ISBN);
-        requestDto.setCoverImage(COVER_IMAGE);
-        requestDto.setPrice(PRICE);
-        requestDto.setDescription(DESCRIPTION);
+        requestDto.setTitle(BOOK_TITLE);
+        requestDto.setAuthor(BOOK_AUTHOR);
+        requestDto.setIsbn(BOOK_ISBN);
+        requestDto.setCoverImage(BOOK_COVER_IMAGE);
+        requestDto.setPrice(BOOK_PRICE);
+        requestDto.setDescription(BOOK_DESCRIPTION);
         requestDto.setCategoryIds(Set.of(1L));
 
         category = new Category();
@@ -85,28 +85,28 @@ public class BookServiceTest {
         category.setName("Fiction");
 
         mappedBook = new Book();
-        mappedBook.setTitle(TITLE);
-        mappedBook.setAuthor(AUTHOR);
-        mappedBook.setIsbn(ISBN);
-        mappedBook.setCoverImage(COVER_IMAGE);
-        mappedBook.setPrice(PRICE);
-        mappedBook.setDescription(DESCRIPTION);
+        mappedBook.setTitle(BOOK_TITLE);
+        mappedBook.setAuthor(BOOK_AUTHOR);
+        mappedBook.setIsbn(BOOK_ISBN);
+        mappedBook.setCoverImage(BOOK_COVER_IMAGE);
+        mappedBook.setPrice(BOOK_PRICE);
+        mappedBook.setDescription(TestConstants.BOOK_DESCRIPTION);
 
         savedBook = new Book();
         savedBook.setId(100L);
-        savedBook.setTitle(TITLE);
-        savedBook.setAuthor(AUTHOR);
-        savedBook.setIsbn(ISBN);
+        savedBook.setTitle(BOOK_TITLE);
+        savedBook.setAuthor(BOOK_AUTHOR);
+        savedBook.setIsbn(BOOK_ISBN);
         savedBook.setCategories(Set.of(category));
 
         mappedDto = new BookDto();
         mappedDto.setId(100L);
-        mappedDto.setTitle(TITLE);
-        mappedDto.setAuthor(AUTHOR);
-        mappedDto.setIsbn(ISBN);
-        mappedDto.setCoverImage(COVER_IMAGE);
-        mappedDto.setPrice(PRICE);
-        mappedDto.setDescription(DESCRIPTION);
+        mappedDto.setTitle(BOOK_TITLE);
+        mappedDto.setAuthor(BOOK_AUTHOR);
+        mappedDto.setIsbn(BOOK_ISBN);
+        mappedDto.setCoverImage(BOOK_COVER_IMAGE);
+        mappedDto.setPrice(BOOK_PRICE);
+        mappedDto.setDescription(BOOK_DESCRIPTION);
     }
 
     @Test
@@ -114,12 +114,12 @@ public class BookServiceTest {
     public void getBookWithValidId_ShouldReturnBook() {
         Book newBook = new Book();
         newBook.setId(BOOK_VALID_ID);
-        newBook.setAuthor(AUTHOR);
-        newBook.setTitle(TITLE);
-        newBook.setIsbn(ISBN);
-        newBook.setCoverImage(COVER_IMAGE);
-        newBook.setPrice(PRICE);
-        newBook.setDescription(DESCRIPTION);
+        newBook.setAuthor(BOOK_AUTHOR);
+        newBook.setTitle(BOOK_TITLE);
+        newBook.setIsbn(BOOK_ISBN);
+        newBook.setCoverImage(BOOK_COVER_IMAGE);
+        newBook.setPrice(BOOK_PRICE);
+        newBook.setDescription(BOOK_DESCRIPTION);
         newBook.setDeleted(false);
         newBook.setCategories(null);
         when(bookRepository.findById(BOOK_VALID_ID)).thenReturn(Optional.of(newBook));
@@ -131,14 +131,13 @@ public class BookServiceTest {
     @Test
     @DisplayName("getBookById_BookDoesNotExist_ThrowsException")
     public void getBookWithInvalidId_ShouldThrowException() {
-        when(bookRepository.findById(BOOK_NOT_VALID_ID)).thenReturn(Optional.empty());
+        when(bookRepository.findById(BOOK_INVALID_ID)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-                EntityNotFoundException.class, () -> bookService.getBookById(BOOK_NOT_VALID_ID));
-        String expectedMessage = "Book with id " + BOOK_NOT_VALID_ID + " not found";
+                EntityNotFoundException.class, () -> bookService.getBookById(BOOK_INVALID_ID));
+        String expectedMessage = "Book with id " + BOOK_INVALID_ID + " not found";
         String actualMessage = exception.getMessage();
         assertEquals(expectedMessage, actualMessage);
-
     }
 
     @Test
@@ -153,9 +152,9 @@ public class BookServiceTest {
         BookDto result = bookService.createBook(requestDto);
 
         assertNotNull(result);
-        assertEquals(TITLE, result.getTitle());
-        assertEquals(AUTHOR, result.getAuthor());
-        assertEquals(ISBN, result.getIsbn());
+        assertEquals(BOOK_TITLE, result.getTitle());
+        assertEquals(BOOK_AUTHOR, result.getAuthor());
+        assertEquals(BOOK_ISBN, result.getIsbn());
 
         verify(bookMapper).toModel(requestDto);
         verify(bookRepository).save(mappedBook);
@@ -298,7 +297,7 @@ public class BookServiceTest {
         List<BookDto> resultDto = result
                 .stream()
                 .map(bookMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
 
         assertEquals(1, resultDto.size());
         assertEquals(mappedDto, resultDto.get(0));

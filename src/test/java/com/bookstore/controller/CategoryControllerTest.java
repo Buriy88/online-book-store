@@ -1,7 +1,13 @@
 package com.bookstore.controller;
 
 import static com.bookstore.controller.BookControllerTest.mockMvc;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static com.bookstore.util.TestConstants.CATEGORY_DESCRIPTION;
+import static com.bookstore.util.TestConstants.CATEGORY_ID;
+import static com.bookstore.util.TestConstants.CATEGORY_INVALID_ID;
+import static com.bookstore.util.TestConstants.CATEGORY_NAME;
+import static com.bookstore.util.TestUtil.createFictionCategory;
+import static com.bookstore.util.TestUtil.createHorrorCategory;
+import static com.bookstore.util.TestUtil.createUpdateCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -12,14 +18,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.CreateCategoryDto;
+import com.bookstore.util.TestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -84,13 +89,7 @@ public class CategoryControllerTest {
         CreateCategoryDto createCategoryDto = new CreateCategoryDto()
                 .setName("horror")
                 .setDescription("This is a description");
-
-        CategoryDto categoryDto = new CategoryDto()
-                .setName(createCategoryDto.getName())
-                .setDescription(createCategoryDto.getDescription());
-
         String json = objectMapper.writeValueAsString(createCategoryDto);
-        System.out.printf("json: %s", json);
 
         MvcResult result = mockMvc.perform(
                         post("/categories")
@@ -98,16 +97,18 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
-
+        CategoryDto createdCategoryDto = objectMapper
+                .readValue(
+                        result.getResponse().getContentAsString(), CategoryDto.class);
+        assertEquals(createdCategoryDto.getName(), createCategoryDto.getName());
+        assertEquals(createdCategoryDto.getDescription(), createCategoryDto.getDescription());
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("POST /categories - Create category")
     void createCategory_ValidRequest() throws Exception {
-        CreateCategoryDto createCategoryDto = new CreateCategoryDto()
-                .setName("Horror")
-                .setDescription("Scary stories");
+        CreateCategoryDto createCategoryDto = createHorrorCategory();
 
         String json = objectMapper.writeValueAsString(createCategoryDto);
 
@@ -121,32 +122,15 @@ public class CategoryControllerTest {
         CategoryDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
 
-        assertThat(actual.getId()).isNotNull();
-        assertThat(actual.getName()).isEqualTo("Horror");
-        assertThat(actual.getDescription()).isEqualTo("Scary stories");
-        EqualsBuilder.reflectionEquals(createCategoryDto, actual, "id");
+        assertEquals(actual.getName(), createCategoryDto.getName());
+        assertEquals(actual.getDescription(), createCategoryDto.getDescription());
     }
 
     @Test
     @DisplayName("GET /categories - Get all categories")
     @WithMockUser(username = "user", roles = "USER")
     void getAllCategories_ValidRequest() throws Exception {
-        List<CategoryDto> expected = new ArrayList<>();
-        expected.add(new CategoryDto()
-                .setId(1L)
-                .setName("Fiction")
-                .setDescription("Fictional books")
-        );
-        expected.add(new CategoryDto()
-                .setId(2L)
-                .setName("Science")
-                .setDescription("Scientific literature")
-        );
-        expected.add(new CategoryDto()
-                .setId(3L)
-                .setName("Programming")
-                .setDescription("Books about software development")
-        );
+        List<CategoryDto> expected = TestUtil.getAllTestCategories();
 
         MvcResult result = mockMvc.perform(get("/categories")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -159,11 +143,8 @@ public class CategoryControllerTest {
                 responseJson,
                 CategoryDto[].class
         );
-
         assertEquals(3, actualCategoryDto.length);
         assertEquals(expected, Arrays.stream(actualCategoryDto).toList());
-
-        System.out.println(result.getResponse().getContentAsString());
     }
 
     @Test
@@ -174,22 +155,19 @@ public class CategoryControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+        CategoryDto expected = createFictionCategory();
 
         CategoryDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
 
-        assertThat(actual.getId()).isEqualTo(1L);
-        assertThat(actual.getName()).isEqualTo("Fiction");
+        assertEquals(expected, actual);
     }
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
     @DisplayName("PUT /categories/{id} - Update category")
     void updateCategory() throws Exception {
-        CreateCategoryDto updateDto = new CreateCategoryDto()
-                .setName("Updated Name")
-                .setDescription("Updated Description");
-
+        CreateCategoryDto updateDto = createUpdateCategory();
         String json = objectMapper.writeValueAsString(updateDto);
 
         MvcResult result = mockMvc.perform(
@@ -202,8 +180,9 @@ public class CategoryControllerTest {
         CategoryDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
 
-        assertThat(actual.getName()).isEqualTo("Updated Name");
-        assertThat(actual.getDescription()).isEqualTo("Updated Description");
+        assertEquals(updateDto.getName(), actual.getName());
+        assertEquals(updateDto.getDescription(), actual.getDescription());
+
     }
 
     @Test
@@ -215,5 +194,69 @@ public class CategoryControllerTest {
 
         mockMvc.perform(get("/categories/{id}", 3L))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("POST /categories - Should return 400 when name is blank")
+    void createCategory_InvalidName() throws Exception {
+        CreateCategoryDto invalidDto = new CreateCategoryDto()
+                .setName("")
+                .setDescription(CATEGORY_DESCRIPTION);
+
+        String json = objectMapper.writeValueAsString(invalidDto);
+
+        mockMvc.perform(post("/categories")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("GET /categories/{id} - Should return 404 when category not found")
+    @WithMockUser(username = "user", roles = "USER")
+    void getCategoryById_NotFound() throws Exception {
+        mockMvc.perform(get("/categories/{id}", CATEGORY_INVALID_ID)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("PUT /categories/{id} - Should return 404 when updating non-existing category")
+    void updateCategory_NotFound() throws Exception {
+        CreateCategoryDto updateDto = new CreateCategoryDto()
+                .setName(CATEGORY_NAME)
+                .setDescription(CATEGORY_DESCRIPTION);
+
+        String json = objectMapper.writeValueAsString(updateDto);
+
+        mockMvc.perform(put("/categories/{id}", CATEGORY_INVALID_ID)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("DELETE /categories/{id} - Should return 404 when category not found")
+    void deleteCategory_NotFound() throws Exception {
+        mockMvc.perform(delete("/categories/{id}", CATEGORY_INVALID_ID))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("DELETE /categories/{id} - Should return 404 when category not found")
+    void deleteCategory_Unauthorized() throws Exception {
+        mockMvc.perform(delete("/categories/{id}", CATEGORY_ID))
+                .andExpect((status().isUnauthorized()));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("DELETE /categories/{id} - Should return 404 when category not found")
+    void deleteCategory_ForbiddenForUserRole() throws Exception {
+        mockMvc.perform(delete("/categories/{id}", CATEGORY_ID))
+                .andExpect((status().isForbidden()));
     }
 }

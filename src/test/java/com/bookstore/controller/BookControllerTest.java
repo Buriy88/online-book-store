@@ -1,5 +1,18 @@
 package com.bookstore.controller;
 
+import static com.bookstore.util.TestConstants.BOOK_AUTHOR;
+import static com.bookstore.util.TestConstants.BOOK_COVER_IMAGE;
+import static com.bookstore.util.TestConstants.BOOK_DESCRIPTION;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_AUTHOR;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_ID;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_ISBN;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_PRICE;
+import static com.bookstore.util.TestConstants.BOOK_INVALID_TITLE;
+import static com.bookstore.util.TestConstants.BOOK_ISBN;
+import static com.bookstore.util.TestConstants.BOOK_PRICE;
+import static com.bookstore.util.TestConstants.BOOK_TITLE;
+import static com.bookstore.util.TestUtil.createHobbitBook;
+import static com.bookstore.util.TestUtil.getUpdateBook;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -9,27 +22,21 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.book.BookDto;
 import com.bookstore.dto.book.CreateBookRequestDto;
-import com.bookstore.model.Category;
-import com.bookstore.repository.CategoryRepository;
+import com.bookstore.util.TestUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,26 +53,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@Sql(scripts = "classpath:database/books/insert-three-books.sql")
 class BookControllerTest {
 
     protected static MockMvc mockMvc;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
-
-    private Long categoryId;
-
-    @BeforeEach
-    @Sql(scripts = "classpath:database/books/insert-three-books.sql")
-    void setUp() {
-        Category cat = new Category();
-        cat.setName("Test Category");
-        cat.setDescription("Desc");
-        categoryId = categoryRepository.save(cat).getId();
-    }
 
     @BeforeAll
     static void beforeAll(
@@ -107,54 +101,7 @@ class BookControllerTest {
     @DisplayName("Get all books")
     @WithMockUser(username = "admin", roles = "ADMIN")
     void getAllBooks_ValidRequest() throws Exception {
-        List<BookDto> expected = new ArrayList<>();
-        expected.add(new BookDto()
-                .setId(1L)
-                .setTitle("The Hobbit")
-                .setAuthor("J.R.R. Tolkien")
-                .setIsbn("978-0547928227")
-                .setPrice(BigDecimal.valueOf(15.99))
-                .setDescription("Fantasy novel")
-                .setCoverImage(null)
-                .setCategories(Set.of(
-                        new CategoryDto()
-                                .setId(1L)
-                                .setName("Fiction")
-                                .setDescription("Fictional books")
-                ))
-        );
-
-        expected.add(new BookDto()
-                .setId(2L)
-                .setTitle("A Brief History of Time")
-                .setAuthor("Stephen Hawking")
-                .setIsbn("978-0553380163")
-                .setPrice(BigDecimal.valueOf(18.50))
-                .setDescription("Cosmology and science")
-                .setCoverImage(null)
-                .setCategories(Set.of(
-                        new CategoryDto()
-                                .setId(2L)
-                                .setName("Science")
-                                .setDescription("Scientific literature")
-                ))
-        );
-
-        expected.add(new BookDto()
-                .setId(3L)
-                .setTitle("Clean Code")
-                .setAuthor("Robert C. Martin")
-                .setIsbn("978-0132350884")
-                .setPrice(BigDecimal.valueOf(30.00))
-                .setDescription("A handbook of agile software craftsmanship")
-                .setCoverImage(null)
-                .setCategories(Set.of(
-                        new CategoryDto()
-                                .setId(3L)
-                                .setName("Programming")
-                                .setDescription("Books about software development")
-                ))
-        );
+        List<BookDto> expected = TestUtil.getAllTestBooks();
 
         MvcResult result = mockMvc.perform(get("/books")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -172,8 +119,6 @@ class BookControllerTest {
         assertEquals(3, actualBookDto.length);
         assertEquals(expected, Arrays.stream(actualBookDto).toList());
 
-        System.out.println(result.getResponse().getContentAsString());
-
     }
 
     @Test
@@ -182,17 +127,15 @@ class BookControllerTest {
     void createBook_ValidRequest() throws Exception {
 
         CreateBookRequestDto createBookRequestDto = new CreateBookRequestDto()
-                .setTitle("title")
-                .setAuthor("author")
-                .setIsbn("1234567891")
-                .setPrice(BigDecimal.valueOf(100))
-                .setDescription("description")
-                .setCoverImage("coverImage")
-                .setCategoryIds(Set.of(categoryId));
+                .setTitle(BOOK_TITLE)
+                .setAuthor(BOOK_AUTHOR)
+                .setIsbn(BOOK_ISBN)
+                .setPrice(BOOK_PRICE)
+                .setDescription(BOOK_DESCRIPTION)
+                .setCoverImage(BOOK_COVER_IMAGE)
+                .setCategoryIds(Set.of(1L));
 
         String json = objectMapper.writeValueAsString(createBookRequestDto);
-
-        System.out.printf("json: %s", json);
         MvcResult result = mockMvc.perform(
                         post("/books")
                                 .content(json)
@@ -202,18 +145,18 @@ class BookControllerTest {
         BookDto actualBookDto = objectMapper
                 .readValue(result.getResponse().getContentAsString(), BookDto.class);
         assertNotNull(actualBookDto);
-        assertNotNull(actualBookDto.getId());
-        assertEquals(createBookRequestDto.getTitle(), actualBookDto.getTitle());
-        assertEquals(createBookRequestDto.getAuthor(), actualBookDto.getAuthor());
-        BookDto bookDto = new BookDto()
+        BookDto expected = new BookDto()
                 .setTitle(createBookRequestDto.getTitle())
                 .setAuthor(createBookRequestDto.getAuthor())
                 .setIsbn(createBookRequestDto.getIsbn())
                 .setPrice(createBookRequestDto.getPrice())
                 .setDescription(createBookRequestDto.getDescription())
                 .setCoverImage(createBookRequestDto.getCoverImage());
-        EqualsBuilder.reflectionEquals(bookDto, actualBookDto, "id,CategoryIds");
-
+        assertEquals(expected.getTitle(), actualBookDto.getTitle());
+        assertEquals(expected.getAuthor(), actualBookDto.getAuthor());
+        assertEquals(expected.getIsbn(), actualBookDto.getIsbn());
+        assertEquals(expected.getPrice(), actualBookDto.getPrice());
+        assertEquals(expected.getDescription(), actualBookDto.getDescription());
     }
 
     @Test
@@ -227,27 +170,16 @@ class BookControllerTest {
 
         BookDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), BookDto.class);
+        BookDto expected = createHobbitBook();
 
-        assertEquals(1L, actual.getId());
-        assertEquals("The Hobbit", actual.getTitle());
-        assertEquals("J.R.R. Tolkien", actual.getAuthor());
-        assertEquals("978-0547928227", actual.getIsbn());
-        assertEquals(BigDecimal.valueOf(15.99), actual.getPrice());
-        assertEquals("Fantasy novel", actual.getDescription());
+        assertEquals(actual, expected);
     }
 
     @Test
     @DisplayName("PUT /books/{id} - Update book")
     @WithMockUser(username = "admin", roles = "ADMIN")
     void updateBook_ValidRequest() throws Exception {
-        CreateBookRequestDto updateDto = new CreateBookRequestDto()
-                .setTitle("Updated Title")
-                .setAuthor("Updated Author")
-                .setIsbn("9876543248")
-                .setPrice(BigDecimal.valueOf(55.55))
-                .setDescription("Updated description")
-                .setCoverImage("updated-cover.jpg")
-                .setCategoryIds(Set.of(2L));
+        CreateBookRequestDto updateDto = getUpdateBook();
 
         String json = objectMapper.writeValueAsString(updateDto);
 
@@ -261,11 +193,11 @@ class BookControllerTest {
         BookDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), BookDto.class);
 
-        assertEquals("Updated Title", actual.getTitle());
-        assertEquals("Updated Author", actual.getAuthor());
-        assertEquals("9876543248", actual.getIsbn());
-        assertEquals(BigDecimal.valueOf(55.55), actual.getPrice());
-        assertEquals("Updated description", actual.getDescription());
+        assertEquals(updateDto.getTitle(), actual.getTitle());
+        assertEquals(updateDto.getAuthor(), actual.getAuthor());
+        assertEquals(updateDto.getIsbn(), actual.getIsbn());
+        assertEquals(updateDto.getPrice(), actual.getPrice());
+        assertEquals(updateDto.getDescription(), actual.getDescription());
     }
 
     @Test
@@ -293,10 +225,108 @@ class BookControllerTest {
                 result.getResponse().getContentAsString(),
                 BookDto[].class
         );
+        BookDto expected = createHobbitBook();
+        assertEquals(expected, books[0]);
+    }
 
-        assertEquals(1, books.length);
-        assertEquals("The Hobbit", books[0].getTitle());
-        assertEquals("J.R.R. Tolkien", books[0].getAuthor());
+    @Test
+    @DisplayName("POST /books - Invalid request (missing required fields)")
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void createBook_InvalidRequest_ReturnsBadRequest() throws Exception {
+        CreateBookRequestDto invalidBook = new CreateBookRequestDto()
+                .setTitle(BOOK_INVALID_TITLE)
+                .setIsbn(BOOK_INVALID_ISBN)
+                .setPrice(BOOK_INVALID_PRICE);
+
+        String json = objectMapper.writeValueAsString(invalidBook);
+
+        mockMvc.perform(post("/books")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("GET /books/{id} - Non-existing book")
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void getBookById_NotFound() throws Exception {
+        mockMvc.perform(get("/books/{id}", 9999L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("PUT /books/{id} - Invalid update request")
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void updateBook_InvalidRequest_ReturnsBadRequest() throws Exception {
+        CreateBookRequestDto invalidUpdate = new CreateBookRequestDto()
+                .setTitle("")
+                .setAuthor(BOOK_INVALID_AUTHOR)
+                .setIsbn(BOOK_INVALID_ISBN)
+                .setPrice(BOOK_INVALID_PRICE);
+
+        String json = objectMapper.writeValueAsString(invalidUpdate);
+
+        mockMvc.perform(put("/books/{id}", 1L)
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("DELETE /books/{id} - Non-existing book")
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void deleteBook_NotFound() throws Exception {
+        mockMvc.perform(delete("/books/{id}", BOOK_INVALID_ID))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("GET /books/search - No results")
+    @WithMockUser(username = "user", roles = "USER")
+    void searchBooks_NoMatches_ReturnsEmptyList() throws Exception {
+        MvcResult result = mockMvc.perform(get("/books/search")
+                        .param("authors", BOOK_INVALID_AUTHOR)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        BookDto[] books = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                BookDto[].class
+        );
+
+        assertEquals(0, books.length);
+    }
+
+    @Test
+    @DisplayName("POST /books - Forbidden for USER role")
+    @WithMockUser(username = "user", roles = "USER")
+    void createBook_ForbiddenForUserRole() throws Exception {
+        CreateBookRequestDto createBookRequestDto = new CreateBookRequestDto()
+                .setTitle(BOOK_TITLE)
+                .setAuthor(BOOK_AUTHOR)
+                .setIsbn(BOOK_ISBN)
+                .setPrice(BOOK_PRICE)
+                .setDescription(BOOK_DESCRIPTION)
+                .setCoverImage(BOOK_COVER_IMAGE)
+                .setCategoryIds(Set.of(1L));
+
+        String json = objectMapper.writeValueAsString(createBookRequestDto);
+        MvcResult result = mockMvc.perform(
+                        post("/books")
+                                .content(json)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andReturn();
+    }
+
+    @Test
+    @DisplayName("GET /books - Forbidden for unauthorized user")
+    void getAllBooks_Unauthorized() throws Exception {
+        mockMvc.perform(get("/books")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
 }
