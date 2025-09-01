@@ -97,11 +97,13 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
-        CategoryDto createdCategoryDto = objectMapper
+        CategoryDto expected = new CategoryDto()
+                .setName(createCategoryDto.getName())
+                .setDescription(createCategoryDto.getDescription());
+        CategoryDto actual = objectMapper
                 .readValue(
                         result.getResponse().getContentAsString(), CategoryDto.class);
-        assertEquals(createdCategoryDto.getName(), createCategoryDto.getName());
-        assertEquals(createdCategoryDto.getDescription(), createCategoryDto.getDescription());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -118,12 +120,14 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andReturn();
+        CategoryDto expected = new CategoryDto()
+                .setName(createCategoryDto.getName())
+                .setDescription(createCategoryDto.getDescription());
 
         CategoryDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
+        assertEquals(expected, actual);
 
-        assertEquals(actual.getName(), createCategoryDto.getName());
-        assertEquals(actual.getDescription(), createCategoryDto.getDescription());
     }
 
     @Test
@@ -176,13 +180,12 @@ public class CategoryControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-
+        CategoryDto expected = new CategoryDto()
+                .setName(updateDto.getName())
+                .setDescription(updateDto.getDescription());
         CategoryDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), CategoryDto.class);
-
-        assertEquals(updateDto.getName(), actual.getName());
-        assertEquals(updateDto.getDescription(), actual.getDescription());
-
+        assertEquals(expected, actual);
     }
 
     @Test

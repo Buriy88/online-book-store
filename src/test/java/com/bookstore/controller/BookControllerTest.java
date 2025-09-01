@@ -152,11 +152,9 @@ class BookControllerTest {
                 .setPrice(createBookRequestDto.getPrice())
                 .setDescription(createBookRequestDto.getDescription())
                 .setCoverImage(createBookRequestDto.getCoverImage());
-        assertEquals(expected.getTitle(), actualBookDto.getTitle());
-        assertEquals(expected.getAuthor(), actualBookDto.getAuthor());
-        assertEquals(expected.getIsbn(), actualBookDto.getIsbn());
-        assertEquals(expected.getPrice(), actualBookDto.getPrice());
-        assertEquals(expected.getDescription(), actualBookDto.getDescription());
+
+        assertEquals(expected, actualBookDto);
+
     }
 
     @Test
@@ -189,15 +187,18 @@ class BookControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+        BookDto expected = new BookDto()
+                .setTitle(updateDto.getTitle())
+                .setAuthor(updateDto.getAuthor())
+                .setIsbn(updateDto.getIsbn())
+                .setPrice(updateDto.getPrice())
+                .setDescription(updateDto.getDescription())
+                .setCoverImage(updateDto.getCoverImage());
 
         BookDto actual = objectMapper
                 .readValue(result.getResponse().getContentAsString(), BookDto.class);
 
-        assertEquals(updateDto.getTitle(), actual.getTitle());
-        assertEquals(updateDto.getAuthor(), actual.getAuthor());
-        assertEquals(updateDto.getIsbn(), actual.getIsbn());
-        assertEquals(updateDto.getPrice(), actual.getPrice());
-        assertEquals(updateDto.getDescription(), actual.getDescription());
+        assertEquals(expected,actual);
     }
 
     @Test
