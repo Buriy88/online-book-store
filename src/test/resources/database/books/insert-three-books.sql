@@ -5,34 +5,6 @@ DELETE FROM categories;
 ALTER TABLE books ALTER COLUMN id RESTART WITH 1;
 ALTER TABLE categories ALTER COLUMN id RESTART WITH 1;
 
-CREATE TABLE IF NOT EXISTS categories
-(
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name        VARCHAR(255) NOT NULL,
-    description VARCHAR(1000),
-    is_deleted  BOOLEAN DEFAULT FALSE
-);
-CREATE TABLE IF NOT EXISTS books
-(
-    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title       VARCHAR(255) NOT NULL,
-    author      VARCHAR(255) NOT NULL,
-    isbn        VARCHAR(50),
-    price       DECIMAL(10, 2),
-    description VARCHAR(2000),
-    cover_image VARCHAR(500),
-    deleted     BOOLEAN DEFAULT FALSE
-);
-
-CREATE TABLE IF NOT EXISTS books_categories
-(
-    book_id     BIGINT NOT NULL,
-    category_id BIGINT NOT NULL,
-    PRIMARY KEY (book_id, category_id),
-    CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (id),
-    CONSTRAINT fk_category FOREIGN KEY (category_id) REFERENCES categories (id)
-);
-
 INSERT INTO categories (name, description, is_deleted)
 VALUES ('Fiction', 'Fictional books', false),
        ('Science', 'Scientific literature', false),
