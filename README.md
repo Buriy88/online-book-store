@@ -13,6 +13,8 @@ A production-ready REST API for an online bookstore. Shoppers can browse/search 
 - [Architecture](#architecture)  
 - [Tech Stack](#tech-stack)  
 - [Domain Model](#domain-model)  
+- [Database ER Diagram](#database-er-diagram)
+- [Clone the Project](#clone-the-project)
 - [API Endpoints (summary)](#api-endpoints-summary)  
 - [Quick Start](#quick-start)  
   - [Run with Docker Compose (recommended)](#run-with-docker-compose-recommended)  
@@ -123,6 +125,36 @@ flowchart LR
 
 ---
 
+## Database ER Diagram
+
+The diagram below represents the **physical database model** of the application.
+It is generated based on actual JPA entities and reflects real tables,
+join tables, foreign keys, and soft delete flags.
+
+![Database ER Diagram](docs/er-diagram.png)
+
+---
+
+## Clone the Project
+
+Clone the repository and navigate to the project directory:
+
+```bash
+git clone https://github.com/buriy88/online-book-store.git
+cd online-book-store
+```
+
+### Prerequisites
+
+Make sure the following tools are installed:
+- **Java 17+**
+- **Maven 3.9+**
+- **Docker & Docker Compose** (recommended)
+
+After cloning the project, choose one of the run options below.
+
+---
+
 ## API Endpoints (summary)
 
 > **Auth (public):**
@@ -219,14 +251,7 @@ Pull and run the app container (point it to an existing MySQL instance):
 ```bash
 docker pull buriy88/online-book-store:latest
 
-docker run --rm -p 8080:8080 \
-  -e MYSQL_HOST=<mysql-host-or-service> \
-  -e MYSQL_PORT=3306 \
-  -e MYSQLDB_DATABASE=bookstore \
-  -e MYSQLDB_USER=youruser \
-  -e MYSQLDB_PASSWORD=yourpassword \
-  -e JWT_SECRET=your_jwt_secret \
-  buriy88/online-book-store:latest
+docker run --rm -p 8080:8080   -e MYSQL_HOST=<mysql-host-or-service>   -e MYSQL_PORT=3306   -e MYSQLDB_DATABASE=bookstore   -e MYSQLDB_USER=youruser   -e MYSQLDB_PASSWORD=yourpassword   -e JWT_SECRET=your_jwt_secret   buriy88/online-book-store:latest
 ```
 
 > If you run **only** the app container, `MYSQL_HOST` must be a reachable host (e.g., `host.docker.internal` for your local DB). When using **docker-compose**, the host is simply the service name `mysql`.
@@ -253,9 +278,7 @@ The app reads DB settings from env (with safe defaults). Common ones:
 
 **Register**
 ```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
+curl -X POST http://localhost:8080/api/auth/register   -H "Content-Type: application/json"   -d '{
     "email":"john.doe@example.com",
     "password":"securePassword123",
     "repeatPassword":"securePassword123",
@@ -267,17 +290,14 @@ curl -X POST http://localhost:8080/api/auth/register \
 
 **Login**
 ```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john.doe@example.com","password":"securePassword123"}'
+curl -X POST http://localhost:8080/api/auth/login   -H "Content-Type: application/json"   -d '{"email":"john.doe@example.com","password":"securePassword123"}'
 # => { "token": "..." }
 ```
 
 **Authorized request**
 ```bash
 TOKEN=eyJhbGciOi...
-curl http://localhost:8080/api/books \
-  -H "Authorization: Bearer $TOKEN"
+curl http://localhost:8080/api/books   -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
