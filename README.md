@@ -1,4 +1,4 @@
-# Online Book Store — Spring Boot REST API
+# BookHub API — Spring Boot REST API
 
 A production-ready REST API for an online bookstore. Shoppers can browse/search books, manage a cart, and place orders. Admins manage the catalog and order lifecycle. The project was built step-by-step as a portfolio piece and follows clean layering, strong validation, CI, and containerized deployment.
 
