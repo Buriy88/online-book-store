@@ -1,10 +1,12 @@
 package com.bookstore.contoller;
 
-import com.bookstore.DTO.BookDto;
-import com.bookstore.DTO.CreateBookRequestDto;
+import com.bookstore.dto.book.BookDto;
+import com.bookstore.dto.book.CreateBookRequestDto;
 import com.bookstore.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,8 +25,8 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping
-    public List<BookDto> getAll() {
-        return bookService.findAll();
+    public Page<BookDto> getAll(Pageable pageable) {
+        return bookService.findAll(pageable);
     }
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
