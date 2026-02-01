@@ -1,19 +1,13 @@
 package com.bookstore.dto;
 
-import com.bookstore.model.Category;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Data;
 
 @Data
-public class BookDto {
+public class BookDtoWithoutCategoryIds {
     private Long id;
     private String title;
     private String author;
-    private String isbn;
     private BigDecimal price;
     private String description;
-    private String coverImage;
-    private Set<Category> categories = new HashSet<>();
 }
