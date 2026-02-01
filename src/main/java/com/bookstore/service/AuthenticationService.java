@@ -1,7 +1,7 @@
 package com.bookstore.service;
 
-import com.bookstore.dto.UserLoginRequestDto;
-import com.bookstore.dto.UserLoginResponseDto;
+import com.bookstore.dto.user.UserLoginRequestDto;
+import com.bookstore.dto.user.UserLoginResponseDto;
 import com.bookstore.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,8 +1,8 @@
 package com.bookstore.controller;
 
-import com.bookstore.dto.BookDtoWithoutCategoryIds;
 import com.bookstore.dto.CategoryDto;
 import com.bookstore.dto.CreateCategoryDto;
+import com.bookstore.dto.book.BookDtoWithoutCategoryIds;
 import com.bookstore.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,7 +57,6 @@ public class CategoryController {
             description = "Updates category information by ID. Available for ADMIN only.")
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PathVariable Long id,
                                       @RequestBody @Valid CreateCategoryDto dto) {
         return categoryService.update(id, dto);
