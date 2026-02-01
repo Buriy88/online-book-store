@@ -42,3 +42,9 @@ databaseChangeLog:
               - column:
                   name: shipping_address
                   type: VARCHAR(255)
+              - column:
+                  name: deleted
+                  type: BIT(1)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false

@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: Buriy
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 1
+              - column:
+                  name: email
+                  value: admin@bookstore.com
+              - column:
+                  name: password
+                  value: "$2a$10$MkcTr4wPW5F19KJJDXYGEOsxCix3ieGRs4kRMPfNhkX4xidWqkVo6"
+              - column:
+                  name: first_name
+                  value: Admin
+              - column:
+                  name: last_name
+                  value: Admin
+              - column:
+                  name: shipping_address
+                  value: AdminStreet 1
